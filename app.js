@@ -3,9 +3,12 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const compression = require('compression');
+const cors = require('cors');
 const sequelize = require('./src/dbs/index');
+const routes = require('./src/routes');
 
 const PORT = process.env.PORT || 3000;
+const BASE_URL = '/api/v1/developer-tmdb';
 
 const app = express();
 app.use(morgan('combined'));
@@ -22,11 +25,11 @@ app.use(
         },
     }),
 );
+app.use(cors());
+app.use(express.json());
 
-// Định nghĩa route cho API đơn giản
-app.get('/api', (req, res) => {
-    res.status(200).json({ message: 'Hello from Backend' });
-});
+// router
+app.use(`${BASE_URL}`, routes);
 
 // Bắt đầu server
 app.listen(PORT, () => {
